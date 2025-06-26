@@ -22,4 +22,12 @@ class OperatingHours
     {
         return $this->to;
     }
+
+    public function getTimeInSeconds(): int
+    {
+        $from = new \DateTimeImmutable($this->from);
+        $to = new \DateTimeImmutable($this->to);
+
+        return $to->getTimestamp() - $from->getTimestamp();
+    }
 }

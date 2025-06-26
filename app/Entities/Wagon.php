@@ -62,4 +62,13 @@ class Wagon
         return $this->id;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id->toString(),
+            'seats' => $this->seats,
+            'speed' => $this->speed,
+        ];
+    }
+
 }

@@ -34,3 +34,6 @@ services:
     command: [ "redis-server", "--appendonly", "yes" ]
     networks:
       - default
+
+volumes:
+  redis_data:

@@ -12,13 +12,19 @@ class Coaster
 
     public static function restore(array $data): self
     {
-        return new self(
+        $instance = new self(
             id: Uuid::fromString($data['id']),
             routeLength: $data['routeLength'],
             staffCount: $data['staffCount'],
             customerCount: $data['customerCount'],
             operatingHours: new OperatingHours($data['operatingHours']['from'], $data['operatingHours']['to']),
         );
+
+        foreach ($data['wagons'] as $wagon) {
+            $instance->addWagon(Wagon::restore($wagon));
+        }
+
+        return $instance;
     }
 
     public static function create(
@@ -89,6 +95,11 @@ class Coaster
 
     public function toArray(): array
     {
+        $wagonsArray = [];
+
+        foreach ($this->wagons as $wagon) {
+            $wagonsArray[] = $wagon->toArray();
+        }
         return [
             'id' => $this->id->toString(),
             'staffCount' => $this->staffCount,
@@ -98,6 +109,7 @@ class Coaster
                 'from' => $this->operatingHours->getFrom(),
                 'to' => $this->operatingHours->getTo(),
             ],
+            'wagons' => $wagonsArray,
         ];
     }
 
@@ -109,5 +121,27 @@ class Coaster
     public function removeWagon(UuidInterface $wagonId): void
     {
         unset($this->wagons[$wagonId->toString()]);
+    }
+
+    public function countWagons(): int
+    {
+        return count($this->wagons);
+    }
+
+    /**
+     * Taki mały hack, żebym mógł wyliczać ilość potrzebnych wagonów. Sorka :>
+     */
+    public function getWagonSeatsCount(): int
+    {
+        return isset($this->wagons[0]) ? $this->wagons[0]->getSeats() : 32;
+    }
+
+    /**
+     * Tutaj też :P
+     */
+    public function getWagonSpeed(): float
+    {
+        return isset($this->wagons[0]) ? $this->wagons[0]->getSpeed() : 1.2;
+
     }
 }
