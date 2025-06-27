@@ -2,8 +2,11 @@
 
 namespace Config;
 
+use App\Libraries\CoasterStatusCalculator;
+use App\Libraries\ConsoleMonitor;
 use App\Repositories\CoasterRepositoryInterface;
 use App\Repositories\RedisCoasterRepository;
+use Clue\React\Redis\RedisClient;
 use CodeIgniter\Config\BaseService;
 use Predis\Client;
 
@@ -36,5 +39,26 @@ class Services extends BaseService
             'password' => getenv('redis.password'),
             'database' => getenv('redis.database'),
         ]);
+    }
+
+    public static function redisAsync(bool $getShared = true): RedisClient
+    {
+        return new RedisClient(
+            sprintf(
+                '%s:%s',
+                getenv('redis.host'),
+                getenv('redis.port')
+            )
+        );
+    }
+
+    public static function coasterStatusCalculator(): CoasterStatusCalculator
+    {
+        return new CoasterStatusCalculator();
+    }
+
+    public static function consoleMonitor(): ConsoleMonitor
+    {
+        return new consoleMonitor(self::coasterStatusCalculator());
     }
 }

@@ -35,7 +35,7 @@ class Coasters extends BaseController
         return $this->respondCreated(['id' => $coaster->getId()]);
     }
 
-    public function update(string $id = null): ResponseInterface
+    public function update(string $id): ResponseInterface
     {
         $id = Uuid::fromString($id);
         $coasterRepository = Services::coasterRepository();
@@ -44,13 +44,14 @@ class Coasters extends BaseController
         $coaster = $coasterRepository->find($id);
 
         if (!$coaster) {
-            return $this->respond('Coaster not found', ResponseInterface::HTTP_NOT_FOUND);
+            return $this->failNotFound('Coaster not found');
         }
 
         $operatingHours = new OperatingHours(
             $data['godziny_od'] ?? $coaster->getOperatingHours()->getFrom(),
             $data['godziny_do'] ?? $coaster->getOperatingHours()->getTo(),
         );
+
         $coaster->setStaffCount($data['liczba_personelu'] ?? $coaster->getStaffCount());
         $coaster->setCustomerCount($data['liczba_klientow'] ?? $coaster->getCustomerCount());
         $coaster->setOperatingHours($operatingHours);
@@ -70,7 +71,7 @@ class Coasters extends BaseController
         $coaster = $coasterRepository->find($id);
 
         if (!$coaster) {
-            return $this->respond('Coaster not found', ResponseInterface::HTTP_NOT_FOUND);
+            return $this->failNotFound('Coaster not found');
         }
 
         $coasterRepository->delete($coaster);
@@ -87,7 +88,7 @@ class Coasters extends BaseController
         $coaster = $coasterRepository->find($coasterId);
 
         if (!$coaster) {
-            return $this->respond('Coaster not found', ResponseInterface::HTTP_NOT_FOUND);
+            return $this->failNotFound('Coaster not found');
         }
 
         $coaster->addWagon(
@@ -111,7 +112,7 @@ class Coasters extends BaseController
         $coaster = $coasterRepository->find($coasterId);
 
         if (!$coaster) {
-            return $this->respond('Coaster not found', ResponseInterface::HTTP_NOT_FOUND);
+            return $this->failNotFound('Coaster not found');
         }
 
         $coaster->removeWagon($wagonId);

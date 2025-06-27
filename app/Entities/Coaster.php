@@ -128,6 +128,11 @@ class Coaster
         return count($this->wagons);
     }
 
+    public function getOperatingTimeInSeconds(): int
+    {
+        return $this->getOperatingHours()->getTimeInSeconds() + 5 * 60; // After last ride break is not necessary
+    }
+
     /**
      * Taki mały hack, żebym mógł wyliczać ilość potrzebnych wagonów. Sorka :>
      */
@@ -142,6 +147,5 @@ class Coaster
     public function getWagonSpeed(): float
     {
         return isset($this->wagons[0]) ? $this->wagons[0]->getSpeed() : 1.2;
-
     }
 }

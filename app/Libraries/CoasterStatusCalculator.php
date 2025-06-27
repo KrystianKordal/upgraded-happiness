@@ -8,11 +8,7 @@ class CoasterStatusCalculator
 {
     public function requiredWagons(Coaster $coaster): int
     {
-        $oneWagonRouteTime = $coaster->getRouteLength() / $coaster->getWagonSpeed();
-        $routeTimeWithBreak = $oneWagonRouteTime + 5 * 60;
-        $operatingTimeInSeconds = $coaster->getOperatingHours()->getTimeInSeconds() + 5 * 60; // After last ride break is not necessary
-
-        $ridesCountForOneWagon = floor($operatingTimeInSeconds / $routeTimeWithBreak);
+        $ridesCountForOneWagon = $this->calculateRidesForOneWagon($coaster);
 
         $requiredRidesForAllCustomers = ceil($coaster->getCustomerCount() / $coaster->getWagonSeatsCount());
 
@@ -26,11 +22,7 @@ class CoasterStatusCalculator
 
     public function calculateCapacity(Coaster $coaster): int
     {
-        $oneWagonRouteTime = $coaster->getRouteLength() / $coaster->getWagonSpeed();
-        $routeTimeWithBreak = $oneWagonRouteTime + 5 * 60;
-        $operatingTimeInSeconds = $coaster->getOperatingHours()->getTimeInSeconds() + 5 * 60; // After last ride break is not necessary
-
-        $ridesCountForOneWagon = floor($operatingTimeInSeconds / $routeTimeWithBreak);
+        $ridesCountForOneWagon = $this->calculateRidesForOneWagon($coaster);
 
         return $ridesCountForOneWagon * $coaster->countWagons() * $coaster->getWagonSeatsCount();
     }
@@ -55,5 +47,20 @@ class CoasterStatusCalculator
         }
 
         return $problems;
+    }
+
+    protected function calculateRidesForOneWagon(Coaster $coaster): int
+    {
+        $operatingTimeInSeconds = $coaster->getOperatingTimeInSeconds();
+        $routeTimeWithBreak = $this->calculateWagonTimeWithBreak($coaster);
+
+        return floor($operatingTimeInSeconds / $routeTimeWithBreak);
+    }
+
+    protected function calculateWagonTimeWithBreak(Coaster $coaster): float
+    {
+        $oneWagonRouteTime = $coaster->getRouteLength() / $coaster->getWagonSpeed();
+
+        return $oneWagonRouteTime + 5 * 60;
     }
 }

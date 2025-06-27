@@ -59,22 +59,20 @@ class CoasterMonitorCommand extends BaseCommand
      *
      * @param array $params
      */
-    public function run(array $params)
+    public function run(array $params): void
     {
-        $loop = Loop::get();
-
-        $client = new RedisClient('redis:6379');
-
-        $client->subscribe('coaster:update');
-        $monitor = new ConsoleMonitor();
+        $monitor = Services::consoleMonitor();
         $coasterRepository = Services::coasterRepository();
 
-        $client->on('message', function ($channel, $message) use ($monitor, $coasterRepository) {
+        $redis = Services::redisAsync();
+        $redis->subscribe('coaster:update');
+        $redis->on('message', function ($channel, $message) use ($monitor, $coasterRepository) {
             $monitor->print($coasterRepository->getAll());
         });
 
         $monitor->print($coasterRepository->getAll());
 
+        $loop = Loop::get();
         $loop->run();
     }
 }
