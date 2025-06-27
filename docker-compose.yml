@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    environment:
+      CI_ENVIRONMENT: production
     volumes:
       - .:/var/www/html
     networks:
