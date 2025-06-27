@@ -9,7 +9,7 @@ class Wagon
 {
     public static function create(
         int $seats,
-        int $speed,
+        float $speed,
         ?UuidInterface $id = null,
     ): self
     {
@@ -42,19 +42,9 @@ class Wagon
         return $this->seats;
     }
 
-    public function setSeats(int $seats): void
-    {
-        $this->seats = $seats;
-    }
-
     public function getSpeed(): float
     {
         return $this->speed;
-    }
-
-    public function setSpeed(float $speed): void
-    {
-        $this->speed = $speed;
     }
 
     public function getId(): UuidInterface

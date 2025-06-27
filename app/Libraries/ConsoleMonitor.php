@@ -9,7 +9,8 @@ use Config\Services;
 class ConsoleMonitor
 {
     public function __construct(
-        private readonly CoasterStatusCalculator $calculator
+        private readonly CoasterStatusCalculator $calculator,
+        private readonly Notifier $notifier
     )
     {
     }
@@ -26,6 +27,11 @@ class ConsoleMonitor
 
         foreach ($coasters as $coaster) {
             $problems = $this->calculator->problems($coaster);
+
+            if ($problems) {
+                $this->notifier->logProblem(sprintf('Kolejka %s - Problem: %s', $coaster->getId(), implode(', ', $problems)));
+            }
+
             $status = count($problems) ? implode(', ', $problems) : 'OK';
 
             ClI::print(

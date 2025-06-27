@@ -4,6 +4,7 @@ namespace Config;
 
 use App\Libraries\CoasterStatusCalculator;
 use App\Libraries\ConsoleMonitor;
+use App\Libraries\Notifier;
 use App\Repositories\CoasterRepositoryInterface;
 use App\Repositories\RedisCoasterRepository;
 use Clue\React\Redis\RedisClient;
@@ -59,6 +60,14 @@ class Services extends BaseService
 
     public static function consoleMonitor(): ConsoleMonitor
     {
-        return new consoleMonitor(self::coasterStatusCalculator());
+        return new ConsoleMonitor(
+            self::coasterStatusCalculator(),
+            self::notifier()
+        );
+    }
+
+    public static function notifier(): Notifier
+    {
+        return new Notifier();
     }
 }
