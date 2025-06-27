@@ -17,7 +17,7 @@ class CoasterStatusCalculator
 
     public function requiredStaff(Coaster $coaster): int
     {
-        return $coaster->countWagons() * 2 + 1;
+        return $this->requiredWagons($coaster) * 2 + 1;
     }
 
     public function calculateCapacity(Coaster $coaster): int

@@ -17,6 +17,18 @@ class Coasters extends BaseController
 
     public function add(): ResponseInterface
     {
+        $rules = [
+            'liczba_personelu'  => 'required|is_natural',
+            'liczba_klientow'   => 'required|is_natural',
+            'dl_trasy'          => 'required|is_natural',
+            'godziny_od'        => 'required|valid_date[H:i]',
+            'godziny_do'        => 'required|valid_date[H:i]|after[godziny_od]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->failValidationErrors($this->validator->getErrors());
+        }
+
         $coasterRepository = service('coasterRepository');
         $data = $this->request->getJSON(true);
 
@@ -37,6 +49,17 @@ class Coasters extends BaseController
 
     public function update(string $id): ResponseInterface
     {
+        $rules = [
+            'liczba_personelu'  => 'required|is_natural',
+            'liczba_klientow'   => 'required|is_natural',
+            'godziny_od'        => 'required|valid_date[H:i]',
+            'godziny_do'        => 'required|valid_date[H:i]|after[godziny_od]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->failValidationErrors($this->validator->getErrors());
+        }
+
         $id = Uuid::fromString($id);
         $coasterRepository = Services::coasterRepository();
         $data = $this->request->getJSON(true);
@@ -81,6 +104,15 @@ class Coasters extends BaseController
 
     public function addWagon(string $coasterId): ResponseInterface
     {
+        $rules = [
+            'ilosc_miejsc'  => 'required|is_natural',
+            'predkosc_wagonu'   => 'required|numeric',
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->failValidationErrors($this->validator->getErrors());
+        }
+
         $coasterId = Uuid::fromString($coasterId);
         $coasterRepository = Services::coasterRepository();
         $data = $this->request->getJSON(true);
