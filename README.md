@@ -1,68 +1,92 @@
-# CodeIgniter 4 Application Starter
+# Coaster Monitor
 
-## What is CodeIgniter?
+## Dev environment
+API is available at http://localhost:8080
+### Installation
+```
+make up-dev
+```
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+#### Or manually
+Run docker containers
+```
+docker compose -f docker-compose-dev.yml up -d --build
+```
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+Install composer dependencies
+```
+docker compose -f docker-compose-dev.yml exec php composer i
+```
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+### Monitor command
+```
+make monitor-dev
+```
+or
+```
+docker compose -f docker-compose-dev.yml exec php php spark coaster:monitor
+```
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## Prod environment
+API is available at http://localhost
+### Installation
+```
+make up-prod
+```
+#### Or manually
+Run docker containers
+```
+docker compose up -d --build
+```
 
-## Installation & updates
+Install composer dependencies
+```
+docker compose exec php composer i
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+### Monitor command
+```
+make monitor-dev
+```
+or
+```
+docker compose exec php php spark coaster:monitor
+```
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## API
 
-## Setup
+### POST /api/coasters
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Register new coaster
 
-## Important Change with index.php
+| Param              | Type   | Opis                            |
+|--------------------|--------|---------------------------------|
+| `liczba_personelu` | int    | Number of staff                 |
+| `liczba_klientow`  | int    | Daily count of customers        |
+| `dl_trasy`         | int    | Route length in meters          |
+| `godziny_od`       | string | Opening hour (example: `08:00`) |
+| `godziny_do`       | string | Closing hour (example: `16:00`) |
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### PUT /api/coasters/{coasterId}
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+Update existing coaster
 
-**Please** read the user guide for a better explanation of how CI4 works!
+| Param              | Type   | Opis                            |
+|--------------------|--------|---------------------------------|
+| `liczba_personelu` | int    | Number of staff                 |
+| `liczba_klientow`  | int    | Daily count of customers        |
+| `godziny_od`       | string | Opening hour (example: `08:00`) |
+| `godziny_do`       | string | Closing hour (example: `16:00`) |
 
-## Repository Management
+### POST /api/coasters/{coasterId}/wagons
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+Add new wagon to coaster
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+| Param             | Type   | Opis                            |
+|-------------------|--------|---------------------------------|
+| `ilosc_miejsc`    | int    | Number of seats                 |
+| `predkosc_wagonu` | float  | Wagon speed (in m/s)            |
 
-## Server Requirements
+### DELETE /api/coasters/{coasterId}/wagons/{wagonId}
 
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Delete existing wagon
