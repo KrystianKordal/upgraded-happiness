@@ -34,7 +34,7 @@ class CoasterStatusCalculator
         $staffDiff = $coaster->getStaffCount() - $this->requiredStaff($coaster);
         $wagonDiff = $coaster->countWagons() - $this->requiredWagons($coaster);
 
-        if ($this->calculateCapacity($coaster) > $coaster->getCustomerCount() * 2) {
+        if ($this->calculateCapacity($coaster) > $coaster->getCustomerCount() * 2 && $coaster->countWagons() > 1) {
             $problems[] = sprintf('Nadmiar wagonów: %s oraz pracowników: %s', $wagonDiff, $wagonDiff * 2 + $staffDiff);
         } elseif ($staffDiff > 0) {
             $problems[] = sprintf("Nadmiar pracowników: %d", $staffDiff);
