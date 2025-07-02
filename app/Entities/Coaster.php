@@ -138,7 +138,9 @@ class Coaster
      */
     public function getWagonSeatsCount(): int
     {
-        return isset($this->wagons[0]) ? $this->wagons[0]->getSeats() : 32;
+        $firstWagon = reset($this->wagons) ?: null;
+
+        return $firstWagon?->getSeats() ?? 20;
     }
 
     /**
@@ -146,6 +148,8 @@ class Coaster
      */
     public function getWagonSpeed(): float
     {
-        return isset($this->wagons[0]) ? $this->wagons[0]->getSpeed() : 1.2;
+        $firstWagon = reset($this->wagons) ?: null;
+
+        return $firstWagon?->getSpeed() ?? 1;
     }
 }
