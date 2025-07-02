@@ -123,16 +123,16 @@ class Coasters extends BaseController
             return $this->failNotFound('Coaster not found');
         }
 
-        $coaster->addWagon(
-            Wagon::create(
-                seats: $data['ilosc_miejsc'],
-                speed: $data['predkosc_wagonu'],
-            )
+        $newWagon = Wagon::create(
+            seats: $data['ilosc_miejsc'],
+            speed: $data['predkosc_wagonu'],
         );
+
+        $coaster->addWagon($newWagon);
 
         $coasterRepository->update($coaster);
 
-        return $this->respondCreated(['id' => Uuid::uuid4()->toString()]);
+        return $this->respondCreated(['id' => $newWagon->getId()]);
     }
 
     public function deleteWagon(string $coasterId, string $wagonId): ResponseInterface
