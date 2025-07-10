@@ -114,7 +114,7 @@ class Coasters extends BaseController
         }
 
         $coasterId = Uuid::fromString($coasterId);
-        $coasterRepository = Services::coasterRepository();
+        $coasterRepository = Services::coasterRepository(); // test
         $data = $this->request->getJSON(true);
 
         $coaster = $coasterRepository->find($coasterId);
