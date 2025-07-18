@@ -15,6 +15,7 @@ up-prod:
 	docker compose -f $(PROD_COMPOSE_FILE) up -d --build
 	docker compose -f $(PROD_COMPOSE_FILE) exec php composer i
 
+
 exec-prod:
 	docker compose -f $(PROD_COMPOSE_FILE) exec php bash
 
